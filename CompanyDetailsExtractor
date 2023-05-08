@@ -1,0 +1,85 @@
+Public Sub Main()
+  Application.ScreenUpdating = False 
+  Application.EnableEvents = False
+  Application.DisplayStatusBar = False
+  
+  While ActiveCell.Value <> ""
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    Call linkGen
+    Call WebScraping
+    ActiveCell.Offset(0, 1).Range("A1").Select
+    call puller
+    Call ClearSheet
+    ActiveCell.offset(1, -2) Range("A1").Select
+  Wend
+  
+  Application.ScreenUpdating = True 
+  Application.EnableEvents = True
+  Application.DisplayStatusBar = True
+End Sub
+
+Private Sub linkGen()
+  ActiveCell. FormulaRici = "-CONCAT(""https://en.wikipedia.org/wiki/"", RC[-1])"
+  Selection.Copy
+  Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks _ :=False, Transpose:=False
+End Sub
+
+Private Sub Webscraping()
+  Din url As String
+  url = ActiveCell.Value
+  Din table As QueryTable
+  
+  On Error GoTo nyerror
+  
+  Set table Sheet1.QueryTables.Add("URL;" & url, Sheet1.Range("A1"))
+  With table
+    .BackgroundQuery= False
+    .WebSelectionType = x1specifiedTables WebselectionType = xlEntirePage
+    .WebTables="1"
+    .WebFormatting = xlWebFormatting one
+    .Refresh
+  End With
+  
+myerror:
+End Sub
+
+Private Sub puller()
+  Sheets("Sheet1").Select
+  Range("A1").Select
+  Din As Byte
+  Din address As String
+  address = ""
+  
+  For i = 1 To 50
+    If ActiveCell.Value = "Headquarters" Then
+      ActiveCell.Offset(0, 1).Range("A1").Select
+      address = address & ActiveCell.Value
+      ActiveCell.offset (1, 0).Range("A1").Select
+      
+      While ActiveCell.Offset(0, -1).Range("A1").Value = ""
+        address = address & ActiveCell.Value
+        ActiveCell.Offset(1, 0).Range("A1").Select
+      Wend
+      
+      Sheets("Sheet2").Select
+      ActiveCell.Value = address
+      Exit Sub
+      
+    Else
+      ActiveCell.offset (1, 0).Range("A1").Select
+    End If
+    
+    If i = 50 Then
+      Sheets("Sheet2").Select ActiveCell.Value = "NA"
+    End If
+  Next i
+End sub
+
+Private Sub clearsheet ()
+  Din table As QueryTable
+  
+  For Each table In Sheet1.QueryTables
+    table.Delete
+  Next table
+  Sheet1.Cells.clear
+End Sub
