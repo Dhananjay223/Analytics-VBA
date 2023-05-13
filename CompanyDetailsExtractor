@@ -2,7 +2,7 @@ Public Sub Main()
   Application.ScreenUpdating = False 
   Application.EnableEvents = False
   Application.DisplayStatusBar = False
-  
+
   Call listed
 
   While ActiveCell.Value <> ""
