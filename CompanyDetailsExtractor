@@ -3,14 +3,21 @@ Public Sub Main()
   Application.EnableEvents = False
   Application.DisplayStatusBar = False
   
+  Call listed
+
   While ActiveCell.Value <> ""
-    ActiveCell.Offset(0, 1).Range("A1").Select
-    Call linkGen
-    Call WebScraping
-    ActiveCell.Offset(0, 1).Range("A1").Select
-    call puller
-    Call ClearSheet
-    ActiveCell.offset(1, -2) Range("A1").Select
+On Error Resume Next
+    If ActiveCell.offset(0,2).Value = "#FIELD!" Then
+      ActiveCell.Offset(0, 1).Range("A1").Select
+      Call linkGen
+      Call WebScraping
+      ActiveCell.Offset(0, 1).Range("A1").Select
+      call puller
+      Call ClearSheet
+      ActiveCell.offset(1, -2) Range("A1").Select
+    Else
+      ActiveCell.offset(1, 0) Range("A1").Select
+    End If
   Wend
   
   Application.ScreenUpdating = True 
@@ -25,11 +32,11 @@ Private Sub linkGen()
 End Sub
 
 Private Sub Webscraping()
-  Din url As String
+  Dim url As String
   url = ActiveCell.Value
-  Din table As QueryTable
+  Dim table As QueryTable
   
-  On Error GoTo nyerror
+  On Error GoTo myerror
   
   Set table Sheet1.QueryTables.Add("URL;" & url, Sheet1.Range("A1"))
   With table
@@ -46,8 +53,8 @@ End Sub
 Private Sub puller()
   Sheets("Sheet1").Select
   Range("A1").Select
-  Din As Byte
-  Din address As String
+  Dim As Byte
+  Dim address As String
   address = ""
   
   For i = 1 To 50
@@ -76,10 +83,32 @@ Private Sub puller()
 End sub
 
 Private Sub clearsheet ()
-  Din table As QueryTable
+  Dim table As QueryTable
   
   For Each table In Sheet1.QueryTables
     table.Delete
   Next table
   Sheet1.Cells.clear
+End Sub
+
+Private Sub listed()
+  Range(Selectioon, Selection.End(xlDown)).Select
+  Selection.Copy
+  ActiveCell.offset (0, 1).Range("A1").Select
+  ActiveSheet.Paste
+  ActiveCell.Select
+  Dim count As Integer
+  count = 0
+  While ActiveCell.Value <> ""
+    count = count - 1
+    Selection.ConvertToLinkedDataType ServiceID: 268435456, LanguageCulture:=
+    "en-US"
+    ActiveCell.Offset(0, 1).Range("A1"). FormulaRlci = "-RC [-1]. Headquarters
+    ActiveCell.offset(0, 1).Range("A1").Select
+    Selection.Copy
+    Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks :=False, Transpose:=False
+    ActiveCell.Offset(0, -1).Range("A1").Value = ""
+    ActiveCell.Offset(1, -1). Select
+  Wend
+  ActiveCell.Offset (count, -1).Select
 End Sub
